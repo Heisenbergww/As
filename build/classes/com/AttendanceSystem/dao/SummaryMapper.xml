@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.AttendanceSystem.dao.SummaryMapper" >
+  <resultMap id="BaseResultMap" type="com.AttendanceSystem.pojo.po.Summary" >
+    <result column="User_Name" property="userName" jdbcType="VARCHAR" />
+    <result column="User_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="Affiliation_name" property="affiliationName" jdbcType="VARCHAR" />
+    <result column="Affiliation_id" property="affiliationId" jdbcType="VARCHAR" />
+    <result column="WorkTime" property="worktime" jdbcType="TIMESTAMP" />
+    <result column="OffworkTime" property="offworktime" jdbcType="TIMESTAMP" />
+    <result column="Length_OF_Should_AttendTime" property="lengthOfShouldAttendtime" jdbcType="DOUBLE" />
+    <result column="Length_Of_TotalTime" property="lengthOfTotaltime" jdbcType="DOUBLE" />
+    <result column="Length_Of_TotalOvertime" property="lengthOfTotalovertime" jdbcType="DOUBLE" />
+    <result column="Lenght_Of_Workday_overtime" property="lenghtOfWorkdayOvertime" jdbcType="DOUBLE" />
+    <result column="Length_Of_Holiday_overtime" property="lengthOfHolidayOvertime" jdbcType="DOUBLE" />
+    <result column="Date" property="date" jdbcType="DATE" />
+    <result column="Vacation_Type" property="vacationType" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="Late_time" property="lateTime" jdbcType="DOUBLE" />
+    <result column="Late_type" property="lateType" jdbcType="VARCHAR" />
+    <result column="Early_retreat" property="earlyRetreat" jdbcType="VARCHAR" />
+    <result column="Absenteeism" property="absenteeism" jdbcType="VARCHAR" />
+    <result column="No_punch_card_at_work" property="noPunchCardAtWork" jdbcType="VARCHAR" />
+    <result column="No_punch_card_after_work" property="noPunchCardAfterWork" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    User_Name, User_ID, Affiliation_name, Affiliation_id, WorkTime, OffworkTime, Length_OF_Should_AttendTime, 
+    Length_Of_TotalTime, Length_Of_TotalOvertime, Lenght_Of_Workday_overtime, Length_Of_Holiday_overtime, 
+    Date, Vacation_Type, Remark, Late_time, Late_type, Early_retreat, Absenteeism, No_punch_card_at_work, 
+    No_punch_card_after_work
+  </sql>
+  		<!-- List<Summary> getAllOldSummary(); -->
+  			 <select id="getAllOldSummary"  resultType="com.AttendanceSystem.pojo.po.Summary" >
+   					 select *  from summary;
+  			</select>
+  
+  			<!-- public List<Summary> getAllSummary(find_parameter find_p); -->
+  			  	<select id="getAllSummary" resultType="com.AttendanceSystem.pojo.po.Summary"  parameterType="com.AttendanceSystem.pojo.vo.find_parameter">
+			        SELECT 
+			        *
+			        FROM summary
+			        WHERE summary.Affiliation_id  LIKE CONCAT(#{department_id})  AND summary.User_ID like concat (#{user_id})  and summary.date<![CDATA[   <=  ]]>#{end_date2} and summary.date<![CDATA[   >=  ]]>#{begin_date2};
+			    </select>
+  			
+  			<!-- void InsertAttendanceInoformations(Summary summary); -->
+  				<insert id="InsertAttendanceInoformations" parameterType="com.AttendanceSystem.pojo.po.Summary" >
+					    insert into summary (User_Name, User_ID, Affiliation_name, 
+					      Affiliation_id, WorkTime, OffworkTime, 
+					      Length_OF_Should_AttendTime, Length_Of_TotalTime, 
+					      Length_Of_TotalOvertime, Lenght_Of_Workday_overtime, 
+					      Length_Of_Holiday_overtime, Date, Vacation_Type, 
+					      Remark, Late_time, Late_type, 
+					      Early_retreat, Absenteeism, No_punch_card_at_work, 
+					      No_punch_card_after_work)
+					    values (#{User_Name}, #{User_ID}, #{Affiliation_name}, #{Affiliation_id}, #{WorkTime}, #{OffworkTime}, 
+					      #{Length_OF_Should_AttendTime}, #{Length_Of_TotalTime}, 
+					      #{Length_Of_TotalOvertime}, #{Lenght_Of_Workday_overtime}, 
+					      #{Length_Of_Holiday_overtime}, #{date}, #{Vacation_Type}, 
+					      #{Remark}, #{Late_time}, #{Late_type}, 
+					      #{Early_Retreat}, #{Absenteeism}, #{No_punch_card_at_work}, 
+					      #{No_punch_card_after_work})
+					  </insert>
+    <!-- public void updata(Summary summary) -->
+  	  <update id="updata" parameterType="com.AttendanceSystem.pojo.po.Summary" >
+		    update summary
+		   	 set 
+		      Length_OF_Should_AttendTime = #{Length_OF_Should_AttendTime},
+		      Vacation_Type = #{Vacation_Type},
+		      Late_type = #{Late_type},
+      		  Early_retreat = #{Early_Retreat},
+		      Remark=#{Remark}
+		      where summary.User_ID=#{User_ID} and summary.Date=#{date};
+ 	 </update>
+  
+    <!-- public void updata2(Summary summary) -->
+  	  <update id="updata2" parameterType="com.AttendanceSystem.pojo.po.Summary" >
+    update summary
+    set 
+       WorkTime = #{WorkTime},
+      OffworkTime = #{OffworkTime},
+      Length_OF_Should_AttendTime = #{Length_OF_Should_AttendTime},
+      Length_Of_TotalTime = #{Length_Of_TotalTime},
+      Length_Of_TotalOvertime = #{Length_Of_TotalOvertime},
+      Lenght_Of_Workday_overtime = #{Lenght_Of_Workday_overtime},
+      Length_Of_Holiday_overtime = #{Length_Of_Holiday_overtime},
+      Date = #{date},
+      Vacation_Type = #{Vacation_Type},
+      Remark = #{Remark},
+      Late_time = #{Late_time},
+      Late_type = #{Late_type},
+      Early_retreat = #{Early_Retreat},
+      Absenteeism = #{Absenteeism}
+    	where summary.User_ID=#{User_ID} and summary.Date=#{date};
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.AttendanceSystem.pojo.po.SummaryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from summary
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.AttendanceSystem.pojo.po.SummaryExample" >
+    delete from summary
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.AttendanceSystem.pojo.po.Summary" >
+    insert into summary (User_Name, User_ID, Affiliation_name, 
+      Affiliation_id, WorkTime, OffworkTime, 
+      Length_OF_Should_AttendTime, Length_Of_TotalTime, 
+      Length_Of_TotalOvertime, Lenght_Of_Workday_overtime, 
+      Length_Of_Holiday_overtime, Date, Vacation_Type, 
+      Remark, Late_time, Late_type, 
+      Early_retreat, Absenteeism, No_punch_card_at_work, 
+      No_punch_card_after_work)
+    values (#{userName,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{affiliationName,jdbcType=VARCHAR}, 
+      #{affiliationId,jdbcType=VARCHAR}, #{worktime,jdbcType=TIMESTAMP}, #{offworktime,jdbcType=TIMESTAMP}, 
+      #{lengthOfShouldAttendtime,jdbcType=DOUBLE}, #{lengthOfTotaltime,jdbcType=DOUBLE}, 
+      #{lengthOfTotalovertime,jdbcType=DOUBLE}, #{lenghtOfWorkdayOvertime,jdbcType=DOUBLE}, 
+      #{lengthOfHolidayOvertime,jdbcType=DOUBLE}, #{date,jdbcType=DATE}, #{vacationType,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{lateTime,jdbcType=DOUBLE}, #{lateType,jdbcType=VARCHAR}, 
+      #{earlyRetreat,jdbcType=VARCHAR}, #{absenteeism,jdbcType=VARCHAR}, #{noPunchCardAtWork,jdbcType=VARCHAR}, 
+      #{noPunchCardAfterWork,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.AttendanceSystem.pojo.po.Summary" >
+    insert into summary
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userName != null" >
+        User_Name,
+      </if>
+      <if test="userId != null" >
+        User_ID,
+      </if>
+      <if test="affiliationName != null" >
+        Affiliation_name,
+      </if>
+      <if test="affiliationId != null" >
+        Affiliation_id,
+      </if>
+      <if test="worktime != null" >
+        WorkTime,
+      </if>
+      <if test="offworktime != null" >
+        OffworkTime,
+      </if>
+      <if test="lengthOfShouldAttendtime != null" >
+        Length_OF_Should_AttendTime,
+      </if>
+      <if test="lengthOfTotaltime != null" >
+        Length_Of_TotalTime,
+      </if>
+      <if test="lengthOfTotalovertime != null" >
+        Length_Of_TotalOvertime,
+      </if>
+      <if test="lenghtOfWorkdayOvertime != null" >
+        Lenght_Of_Workday_overtime,
+      </if>
+      <if test="lengthOfHolidayOvertime != null" >
+        Length_Of_Holiday_overtime,
+      </if>
+      <if test="date != null" >
+        Date,
+      </if>
+      <if test="vacationType != null" >
+        Vacation_Type,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="lateTime != null" >
+        Late_time,
+      </if>
+      <if test="lateType != null" >
+        Late_type,
+      </if>
+      <if test="earlyRetreat != null" >
+        Early_retreat,
+      </if>
+      <if test="absenteeism != null" >
+        Absenteeism,
+      </if>
+      <if test="noPunchCardAtWork != null" >
+        No_punch_card_at_work,
+      </if>
+      <if test="noPunchCardAfterWork != null" >
+        No_punch_card_after_work,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliationName != null" >
+        #{affiliationName,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliationId != null" >
+        #{affiliationId,jdbcType=VARCHAR},
+      </if>
+      <if test="worktime != null" >
+        #{worktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="offworktime != null" >
+        #{offworktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lengthOfShouldAttendtime != null" >
+        #{lengthOfShouldAttendtime,jdbcType=DOUBLE},
+      </if>
+      <if test="lengthOfTotaltime != null" >
+        #{lengthOfTotaltime,jdbcType=DOUBLE},
+      </if>
+      <if test="lengthOfTotalovertime != null" >
+        #{lengthOfTotalovertime,jdbcType=DOUBLE},
+      </if>
+      <if test="lenghtOfWorkdayOvertime != null" >
+        #{lenghtOfWorkdayOvertime,jdbcType=DOUBLE},
+      </if>
+      <if test="lengthOfHolidayOvertime != null" >
+        #{lengthOfHolidayOvertime,jdbcType=DOUBLE},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=DATE},
+      </if>
+      <if test="vacationType != null" >
+        #{vacationType,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="lateTime != null" >
+        #{lateTime,jdbcType=DOUBLE},
+      </if>
+      <if test="lateType != null" >
+        #{lateType,jdbcType=VARCHAR},
+      </if>
+      <if test="earlyRetreat != null" >
+        #{earlyRetreat,jdbcType=VARCHAR},
+      </if>
+      <if test="absenteeism != null" >
+        #{absenteeism,jdbcType=VARCHAR},
+      </if>
+      <if test="noPunchCardAtWork != null" >
+        #{noPunchCardAtWork,jdbcType=VARCHAR},
+      </if>
+      <if test="noPunchCardAfterWork != null" >
+        #{noPunchCardAfterWork,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.AttendanceSystem.pojo.po.SummaryExample" resultType="java.lang.Integer" >
+    select count(*) from summary
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update summary
+    <set >
+      <if test="record.userName != null" >
+        User_Name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null" >
+        User_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.affiliationName != null" >
+        Affiliation_name = #{record.affiliationName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.affiliationId != null" >
+        Affiliation_id = #{record.affiliationId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.worktime != null" >
+        WorkTime = #{record.worktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.offworktime != null" >
+        OffworkTime = #{record.offworktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lengthOfShouldAttendtime != null" >
+        Length_OF_Should_AttendTime = #{record.lengthOfShouldAttendtime,jdbcType=DOUBLE},
+      </if>
+      <if test="record.lengthOfTotaltime != null" >
+        Length_Of_TotalTime = #{record.lengthOfTotaltime,jdbcType=DOUBLE},
+      </if>
+      <if test="record.lengthOfTotalovertime != null" >
+        Length_Of_TotalOvertime = #{record.lengthOfTotalovertime,jdbcType=DOUBLE},
+      </if>
+      <if test="record.lenghtOfWorkdayOvertime != null" >
+        Lenght_Of_Workday_overtime = #{record.lenghtOfWorkdayOvertime,jdbcType=DOUBLE},
+      </if>
+      <if test="record.lengthOfHolidayOvertime != null" >
+        Length_Of_Holiday_overtime = #{record.lengthOfHolidayOvertime,jdbcType=DOUBLE},
+      </if>
+      <if test="record.date != null" >
+        Date = #{record.date,jdbcType=DATE},
+      </if>
+      <if test="record.vacationType != null" >
+        Vacation_Type = #{record.vacationType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark != null" >
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lateTime != null" >
+        Late_time = #{record.lateTime,jdbcType=DOUBLE},
+      </if>
+      <if test="record.lateType != null" >
+        Late_type = #{record.lateType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.earlyRetreat != null" >
+        Early_retreat = #{record.earlyRetreat,jdbcType=VARCHAR},
+      </if>
+      <if test="record.absenteeism != null" >
+        Absenteeism = #{record.absenteeism,jdbcType=VARCHAR},
+      </if>
+      <if test="record.noPunchCardAtWork != null" >
+        No_punch_card_at_work = #{record.noPunchCardAtWork,jdbcType=VARCHAR},
+      </if>
+      <if test="record.noPunchCardAfterWork != null" >
+        No_punch_card_after_work = #{record.noPunchCardAfterWork,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update summary
+    set User_Name = #{record.userName,jdbcType=VARCHAR},
+      User_ID = #{record.userId,jdbcType=VARCHAR},
+      Affiliation_name = #{record.affiliationName,jdbcType=VARCHAR},
+      Affiliation_id = #{record.affiliationId,jdbcType=VARCHAR},
+      WorkTime = #{record.worktime,jdbcType=TIMESTAMP},
+      OffworkTime = #{record.offworktime,jdbcType=TIMESTAMP},
+      Length_OF_Should_AttendTime = #{record.lengthOfShouldAttendtime,jdbcType=DOUBLE},
+      Length_Of_TotalTime = #{record.lengthOfTotaltime,jdbcType=DOUBLE},
+      Length_Of_TotalOvertime = #{record.lengthOfTotalovertime,jdbcType=DOUBLE},
+      Lenght_Of_Workday_overtime = #{record.lenghtOfWorkdayOvertime,jdbcType=DOUBLE},
+      Length_Of_Holiday_overtime = #{record.lengthOfHolidayOvertime,jdbcType=DOUBLE},
+      Date = #{record.date,jdbcType=DATE},
+      Vacation_Type = #{record.vacationType,jdbcType=VARCHAR},
+      Remark = #{record.remark,jdbcType=VARCHAR},
+      Late_time = #{record.lateTime,jdbcType=DOUBLE},
+      Late_type = #{record.lateType,jdbcType=VARCHAR},
+      Early_retreat = #{record.earlyRetreat,jdbcType=VARCHAR},
+      Absenteeism = #{record.absenteeism,jdbcType=VARCHAR},
+      No_punch_card_at_work = #{record.noPunchCardAtWork,jdbcType=VARCHAR},
+      No_punch_card_after_work = #{record.noPunchCardAfterWork,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

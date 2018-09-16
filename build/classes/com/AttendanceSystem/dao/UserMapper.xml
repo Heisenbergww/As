@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.AttendanceSystem.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.AttendanceSystem.pojo.po.User" >
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="department_id" property="departmentId" jdbcType="VARCHAR" />
+    <result column="user_type" property="userType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    user_id, user_name, department_id, user_type
+  </sql>
+  <!-- List<User> getAllUserForStatisticians(); -->
+     <select id="getAllUserForStatisticians" resultType="com.AttendanceSystem.pojo.po.User" >
+        SELECT 
+        *
+        FROM  user
+        WHERE user.user_type="2" or user.user_type="3";
+    </select> 
+  
+  	
+  	<!-- List<UserCustom> getAllUser(User user); -->
+  <select id="getAllUser" resultType="com.AttendanceSystem.pojo.vo.UserCustom" >
+      SELECT 
+         user.user_id , user.user_name,user.department_id,user.user_type,department.department_name
+        FROM  user
+   
+				LEFT JOIN department ON department.department_id=`user`.department_id
+				WHERE  user.user_id like CONCAT(#{user_id}) AND `user`.user_name like CONCAT(#{user_name}) AND `user`.department_id like CONCAT(#{department_id}) or department.department_id is null
+				order by user.department_id ASC ,user.user_type ASC;
+    </select> 
+  <!-- User getDepIDByUserID(User user); -->
+    <select id="getDepIDByUserID" resultType="com.AttendanceSystem.pojo.po.User" >
+        SELECT 
+        *
+        FROM  user
+        WHERE user.user_id=#{user_id};
+    </select> 
+  
+  <!-- void delete(User user); -->
+      <delete id="delete" parameterType="com.AttendanceSystem.pojo.po.User" >
+   			 delete from user  where user.user_id=#{user_id};
+    
+  		</delete>
+  
+  <!-- void setDepIDUserIDToNull(Department dep); -->
+    	<update id="setDepIDUserIDToNull" parameterType="com.AttendanceSystem.pojo.po.Department" >
+    			 UPDATE user SET department_id=NULL ,user_type=NULL
+					WHERE department_id=#{department_id};
+  		</update>
+ 
+		 <!--  void add(User user); -->
+					<insert id="add" parameterType="com.AttendanceSystem.pojo.po.User" >
+							    insert into user (user_id, user_name,department_id)
+							    values ( #{user_id},#{user_name},#{department_id});
+					</insert>
+					
+					<!-- void modify(User user); -->
+  					   	<update id="modify" parameterType="com.AttendanceSystem.pojo.po.User" >
+			    			update user  set
+							user.user_name=#{user_name},
+							user.user_type=#{user_type},
+							user.department_id=#{department_id}
+							where user.user_id=#{user_id};
+ 						 </update>
+  
+  <insert id="insert" parameterType="com.AttendanceSystem.pojo.po.User" >
+    insert into user (user_id, user_name, department_id, 
+      user_type)
+    values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{departmentId,jdbcType=VARCHAR}, 
+      #{userType,jdbcType=VARCHAR})
+  </insert>
+
+
+
+ 
+</mapper>

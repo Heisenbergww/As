@@ -1,0 +1,5 @@
+package com.AttendanceSystem.service;
+
+public interface PersonService {
+
+}
