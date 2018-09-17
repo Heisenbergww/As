@@ -23,8 +23,12 @@ import com.AttendanceSystem.pojo.po.Summary;
 import com.AttendanceSystem.pojo.po.User;
 import com.AttendanceSystem.pojo.po.UserDepartment;
 import com.AttendanceSystem.pojo.po.WorkDate;
+import com.AttendanceSystem.pojo.vo.UserCustom;
+import com.AttendanceSystem.pojo.vo.UserShouldLate;
+import com.AttendanceSystem.pojo.vo.YearMonth;
 import com.AttendanceSystem.pojo.vo.find_parameter;
 import com.AttendanceSystem.service.AttendanceInformationsService;
+import com.AttendanceSystem.service.RelationService;
 
 @Controller
 public class AttendanceInformationsController {
@@ -32,6 +36,9 @@ public class AttendanceInformationsController {
 	
 	@Autowired
 	private AttendanceInformationsService  attendanceInformationsService;
+	
+	@Autowired
+	private RelationService  relationService;
 	
 	
 	
@@ -111,6 +118,7 @@ public class AttendanceInformationsController {
 	            	        dd = c.getTime();
 	            	        summary.setDate(dd);
 	            		}
+	            		
 	            		for(i=0;i<list.size();i++) {
 	            				
 	            			if((list.get(i).getDate().equals(summary.getDate()))&&(list.get(i).getUser_ID().equals(summary.getUser_ID()))) {
@@ -140,9 +148,12 @@ public class AttendanceInformationsController {
 	            List<WorkDate> list_workdate=new ArrayList<WorkDate>();
 	            list_workdate=attendanceInformationsService.getAllworkdate();
 	           
+	            if(list.size()>0) {
+	            	begin_time=list.get(0).getDate();
+		            end_time=list.get(0).getDate();
+	            }
 	            
-	            begin_time=list.get(0).getDate();
-	            end_time=list.get(0).getDate();
+	            
 	            for(int ii=1;ii<list.size();ii++) {
 	            	if(list.get(ii).getDate().before(begin_time)) {
 	            		begin_time=list.get(ii).getDate();
@@ -159,8 +170,8 @@ public class AttendanceInformationsController {
 	        	   		dep=attendanceInformationsService.getDepartmentIdByUserId(list.get(j));
 	        	   		if(dep!=null)
 	        	   		{
-	        	   		list.get(j).setAffiliation_id(dep.getDepartment_id());//设置部门ID
-	        	   		list.get(j).setAffiliation_name(dep.getDepartment_name());//设置部门名称
+				        	   		list.get(j).setAffiliation_id(dep.getDepartment_id());//设置部门ID
+				        	   		list.get(j).setAffiliation_name(dep.getDepartment_name());//设置部门名称
 	        	   		}
 	        	   		//设置应出勤时间
 	        	   		//data.getMonth返回0-11
@@ -170,10 +181,11 @@ public class AttendanceInformationsController {
 	        	   		else {
 	        	   				list.get(j).setLength_OF_Should_AttendTime(9.0);//设置应出勤时间
 	        	   		}
+	        	   		
 	        	   		//设置早晚没打卡
 	        	   		if(list.get(j).getWorkTime().equals(list.get(j).getOffworkTime())) {
 	        	   				list.get(j).setLength_Of_TotalTime(null);
-	        	   				if(list.get(j).getWorkTime().getHours()>3&&list.get(j).getWorkTime().getHours()<=18) {
+	        	   				if(list.get(j).getWorkTime().getHours()>3&&list.get(j).getWorkTime().getHours()<=16) {
 	        	   						list.get(j).setOffworkTime(null);
 	        	   						list.get(j).setNo_punch_card_after_work("1");
 	        	   						list.get(j).setNo_punch_card_at_work("2");
@@ -183,12 +195,13 @@ public class AttendanceInformationsController {
 	        	   						list.get(j).setNo_punch_card_after_work("2");
 	        	   						list.get(j).setNo_punch_card_at_work("1");
 	        	   				}
+	        	   				list.get(j).setYes_Or_No("1");//设置为异常数据
 	        	   		}
 	        	   		
 	        	   		else {
 	        	   			list.get(j).setNo_punch_card_after_work("2");
 	   						list.get(j).setNo_punch_card_at_work("2");
-	        	   			
+	   						list.get(j).setYes_Or_No("2");//设置为正常数据
 	        	   			
 	        	   			long  diff=list.get(j).getOffworkTime().getTime()-list.get(j).getWorkTime().getTime();
 	        	   			double  hours = (diff / (1000.0 * 60 * 60 )) ;//计算工作时间
@@ -498,7 +511,7 @@ public class AttendanceInformationsController {
 	        	   						break;
 	        	   				}
 	        	   		}
-	        	   		if(oldlist_label2!=oldlist.size()||oldlist_label2==0)
+	        	   		if(oldlist_label2==oldlist.size())
 	        	   				attendanceInformationsService.InsertAttendanceInoformations(list.get(j));
 	        	   		
 	           }
@@ -524,9 +537,13 @@ public class AttendanceInformationsController {
 			        	   		
 			        	   		UserDepartment dep=new UserDepartment();
 			        	   		dep=attendanceInformationsService.getDepartmentIdByUserId(summary);
-			        	   		summary.setAffiliation_id(dep.getDepartment_id());//设置部门ID
-			        	   		summary.setAffiliation_name(dep.getDepartment_name());//设置部门名称
+			        	   		if(dep!=null) {
+			        	   			summary.setAffiliation_id(dep.getDepartment_id());//设置部门ID
+				        	   		summary.setAffiliation_name(dep.getDepartment_name());//设置部门名称
+			        	   		}
+			        	   		
 			        	   		summary.setAbsenteeism("1");
+			        	   		summary.setYes_Or_No("2");//设置为正常数据
 			        	   		int oldlist_label2=0;
 			        	   		
 			        	   		for(oldlist_label2=0;oldlist_label2<oldlist.size();oldlist_label2++) {
@@ -535,18 +552,31 @@ public class AttendanceInformationsController {
 			        	   						break;
 			        	   				}
 			        	   		}
-			        	   		if(oldlist_label2!=oldlist.size())
+			        	   		if(oldlist_label2==oldlist.size())
 			        	   				attendanceInformationsService.InsertAttendanceInoformations(summary);
 			        	   	}
 			        	   
 	        	   	}
 	           }
-	          
+	          //计算用户表少的用户
+	           //用户表list_user   记录表list
+	           int user_label=0;
+	           for(int i=0;i<list.size();i++) {
+	        	   for(user_label=0;user_label<list_user.size();user_label++) {
+	        		   	if(list.get(i).getUser_ID().equals(list_user.get(user_label).getUser_id())) {
+	        		   			break;
+	        		   	}
+	        		   	if(user_label==list_user.size()) {
+	        		   			User u=new User();
+	        		   			u.setUser_id(list.get(i).getUser_ID());
+	        		   			u.setUser_name(list.get(i).getUser_Name());
+	        		   			u.setUser_type(null);
+	        		   			u.setDepartment_id(null);
+	        		   			relationService.add(u);
+	        		   	}
+	        	   }
+	           }
 	           
-	           
-	         
-			
-	          
 	           		return list;
 		}
 		 
@@ -609,17 +639,58 @@ public class AttendanceInformationsController {
 		}
 		
 		
-		if(find_p.getDepartment_id()=="") {
+		if(find_p.getDepartment_id()==""||find_p.getDepartment_id()==null) {
 			find_p.setDepartment_id("%");
 		}
 			
 	 
-		if(find_p.getUser_id()=="") {
+		if(find_p.getUser_id()==""||find_p.getUser_id()==null) {
 			find_p.setUser_id("%");
 		}
 				
 		
 		List<Summary> list=attendanceInformationsService.getAllSummary(find_p);
+		List<UserCustom> list_user=new ArrayList<UserCustom>();
+		 
+		
+		
+		for(int i=0;i<list.size();i++) {
+			int j=0;
+			for(j=0;j<list_user.size();j++) {
+				if(list.get(i).getUser_ID().equals(list_user.get(j).getUser_id())) {
+					break;
+				}
+			}
+			if(j==list_user.size()) {
+				UserCustom u=new UserCustom();
+				u.setUser_id(list_user.get(i).getUser_id());
+				list_user.add(u);
+			}
+		}
+		
+		
+		
+		List<YearMonth> list_m =new ArrayList<YearMonth>();
+		List<UserShouldLate> list_userShouldLate=new ArrayList<UserShouldLate>();//每月三、五次次机会的记录
+		 
+		
+		int month_label=0;
+		for(int i=0;i<list.size();i++) {
+			YearMonth month=new YearMonth();
+			month.setMonth(list.get(i).getDate().getMonth()+1);
+			month.setYear(list.get(i).getDate().getYear());
+			for(month_label=0;month_label<list_m.size();month_label++) {
+				if(list_m.get(month_label).getYear()==month.getYear()&&list_m.get(month_label).getMonth()==month.getMonth()) {
+					break;
+				}
+			}
+			if(month_label==list_m.size()) {
+				list_m.add(month);
+			}
+		}
+		 
+	
+		
 		
 		//System.out.println("size="+list.size());
 		if(find_p.getNotChckin()==null)//未打卡
@@ -675,18 +746,114 @@ public class AttendanceInformationsController {
 				}
 				if(find_p.getTimes2()!=null) //迟到次数作为筛选条件
 				{
+					int p1=0;
+					int p2=0;
+					 for(int i=0;i<list_m.size();i++) {
+						 	List<Summary> list_short=new ArrayList<Summary>();
+						 	list_short=attendanceInformationsService.getShortSummary(list_m.get(i));
+						 	for(int j=0;j<list_user.size();j++) {
+						 		p1=p2=0;
+				 			 	UserShouldLate usl=new UserShouldLate();
+				 			 	usl.setUser_id(list_user.get(j).getUser_id());
+						 		 	for(int k=0;k<list_short.size();k++) {
+						 			 	
+						 		 		if(list_short.get(k).getUser_ID().equals(list_user.get(j).getUser_id())) {
+						 				 			if(list_short.get(k).getLate_type()=="2"||list_short.get(k).getLate_type()=="4") {
+						 				 				  if(p1<3) {
+						 				 					  p1++;
+						 				 				  }
+						 				 				  else {	
+						 				 					  if(list_short.get(k).getDate().before(usl.getBegin1()))
+						 				 						  		usl.setBegin1(list_short.get(k).getDate());	  
+						 				 				  }
+						 				 			}
+						 				 			else	if(list_short.get(k).getLate_type()=="6") {
+						 				 				  if(p2<5) {
+						 				 					  p1++;
+						 				 				  }
+						 				 				  else {
+						 				 					 if(list_short.get(k).getDate().before(usl.getBegin2()))
+						 				 						 		usl.setBegin2(list_short.get(k).getDate());
+						 				 				  }
+						 				 			}
+						 				 			else {
+						 				 				
+						 				 			}
+						 			 }
+						 		 }
+						 		 	list_userShouldLate.add(usl);
+						 	}
+					 }
+					 
+					 //计算用户认定迟到次数
+					 for(int i=0;i<list_user.size();i++) {
+						  list_user.get(i).setTime(0);
+						 	for(int j=0;j<list.size();j++) {
+						 		if(list_user.get(i).getUser_id().equals(list.get(j).getUser_ID())) {
+						 				
+						 				for(int k=0;k<list_userShouldLate.size();k++) {
+						 					if(list_userShouldLate.get(k).getBegin1().getYear()==list.get(j).getDate().getYear()&&list_userShouldLate.get(k).getBegin1().getMonth()==list.get(j).getDate().getMonth()&&list_userShouldLate.get(k).getUser_id().equals(list_user.get(i).getUser_id())) {
+						 						  if(list.get(j).getLate_type()=="2"||list.get(j).getLate_type()=="4") {
+						 							  	if(list.get(j).getDate().after(list_userShouldLate.get(k).getBegin1())) {
+						 							  		list_user.get(i).setTime(list_user.get(i).getTime()+1);
+						 							  	}
+						 						  }
+						 						  else if(list.get(j).getLate_type()=="6") {
+							 							 if(list.get(j).getDate().after(list_userShouldLate.get(k).getBegin2())) {
+							 							  		list_user.get(i).setTime(list_user.get(i).getTime()+1);
+							 							  	}
+						 						  }
+						 						  else if(list.get(j).getLate_type()=="1"){
+						 							  
+						 						  }
+						 						  else {
+						 							  list_user.get(i).setTime(list_user.get(i).getTime()+1);
+						 						  }
+						 					}
+						 				}
+						 			
+						 		}
+						 	}
+					 }
+					 
+					
 					if(find_p.getMark2()==0) //0	表示  >
 					{
-							 
+								for(int i=0;i<list_user.size();i++) {
+								 	if(list_user.get(i).getTime()>find_p.getMark2()) {
+								 		continue;
+								 	}
+								 	else {
+								 		list_user.remove(i);
+								 		i--;
+								 	}
+							 }
 					}
 					else if(find_p.getMark2()==1)//1	表示  =
 					{
-							 
+								for(int i=0;i<list_user.size();i++) {
+								 	if(list_user.get(i).getTime()==find_p.getMark2()) {
+								 		continue;
+								 	}
+								 	else {
+								 		list_user.remove(i);
+								 		i--;
+								 	}
+							 } 
 					}
 					else //2	表示  <
 					{
-						 
+							for(int i=0;i<list_user.size();i++) {
+							 	if(list_user.get(i).getTime()<find_p.getMark2()) {
+							 		continue;
+							 	}
+							 	else {
+							 		list_user.remove(i);
+							 		i--;
+							 	}
+						 }
 					}
+					
 				}
 				
 		}	

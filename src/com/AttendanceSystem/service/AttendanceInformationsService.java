@@ -7,6 +7,7 @@ import com.AttendanceSystem.pojo.po.Summary;
 import com.AttendanceSystem.pojo.po.User;
 import com.AttendanceSystem.pojo.po.UserDepartment;
 import com.AttendanceSystem.pojo.po.WorkDate;
+import com.AttendanceSystem.pojo.vo.YearMonth;
 import com.AttendanceSystem.pojo.vo.find_parameter;
 
 public interface AttendanceInformationsService {
@@ -23,4 +24,6 @@ public interface AttendanceInformationsService {
     
     
     List<User> getAllUserForStatisticians();
+    
+    List<Summary>   getShortSummary(YearMonth ym);
 }

@@ -42,6 +42,10 @@ public class Summary {
     private String No_punch_card_at_work;
 
     private String No_punch_card_after_work;
+    
+    private String Out_Work;
+    
+    private String Yes_Or_No;
 
 	public String getUser_Name() {
 		return User_Name;
@@ -203,5 +207,22 @@ public class Summary {
 		No_punch_card_after_work = no_punch_card_after_work;
 	}
 
+	public String getOut_Work() {
+		return Out_Work;
+	}
+
+	public void setOut_Work(String out_Work) {
+		Out_Work = out_Work;
+	}
+
+	public String getYes_Or_No() {
+		return Yes_Or_No;
+	}
+
+	public void setYes_Or_No(String yes_Or_No) {
+		Yes_Or_No = yes_Or_No;
+	}
+
+	
     
 }

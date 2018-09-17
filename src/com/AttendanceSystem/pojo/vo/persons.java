@@ -41,6 +41,10 @@ public class persons {
 	    private Integer NoPunchCardAtWorkTime;
 
 	    private Integer NoPunchCardAfterWorkTime;
+	    
+	    private Integer OutWork;
+	    
+	    private Integer YesOrNo;
 
 	    
 	    
@@ -202,6 +206,22 @@ public class persons {
 
 		public void setNoPunchCardAfterWorkTime(Integer noPunchCardAfterWorkTime) {
 			NoPunchCardAfterWorkTime = noPunchCardAfterWorkTime;
+		}
+
+		public Integer getOutWork() {
+			return OutWork;
+		}
+
+		public void setOutWork(Integer outWork) {
+			OutWork = outWork;
+		}
+
+		public Integer getYesOrNo() {
+			return YesOrNo;
+		}
+
+		public void setYesOrNo(Integer yesOrNo) {
+			YesOrNo = yesOrNo;
 		}
 	    
 	    

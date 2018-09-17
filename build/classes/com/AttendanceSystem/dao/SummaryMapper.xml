@@ -22,6 +22,8 @@
     <result column="Absenteeism" property="absenteeism" jdbcType="VARCHAR" />
     <result column="No_punch_card_at_work" property="noPunchCardAtWork" jdbcType="VARCHAR" />
     <result column="No_punch_card_after_work" property="noPunchCardAfterWork" jdbcType="VARCHAR" />
+     <result column="Out_Work" property="outWork" jdbcType="VARCHAR" />
+    <result column="Yes_Or_No" property="yesOrNo" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -152,8 +154,13 @@
   </update>
   
   
-  
-  
+  <!--  List<Summary> getShortSummary(YearMonth ym); -->
+  			  	<select id="getShortSummary" resultType="com.AttendanceSystem.pojo.po.Summary"  parameterType="com.AttendanceSystem.pojo.vo.YearMonth">
+			        SELECT 
+			        *
+			        FROM summary
+			        WHERE year(summary.Date)=#{year} and month(summary.Date)=#{month};
+		  </select>
   
   
   

@@ -2,6 +2,7 @@ package com.AttendanceSystem.dao;
 
 import com.AttendanceSystem.pojo.po.Summary;
 import com.AttendanceSystem.pojo.po.SummaryExample;
+import com.AttendanceSystem.pojo.vo.YearMonth;
 import com.AttendanceSystem.pojo.vo.find_parameter;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface SummaryMapper {
 	 
 	 void updata2(Summary summary);
 	
-	
+	 List<Summary> getShortSummary(YearMonth ym);
 	
 	
 	

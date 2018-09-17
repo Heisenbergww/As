@@ -14,6 +14,7 @@ import com.AttendanceSystem.pojo.po.Summary;
 import com.AttendanceSystem.pojo.po.User;
 import com.AttendanceSystem.pojo.po.UserDepartment;
 import com.AttendanceSystem.pojo.po.WorkDate;
+import com.AttendanceSystem.pojo.vo.YearMonth;
 import com.AttendanceSystem.pojo.vo.find_parameter;
 import com.AttendanceSystem.service.AttendanceInformationsService;
 
@@ -76,5 +77,11 @@ public class AttendanceInformationsServiceImpl implements AttendanceInformations
 	public List<User> getAllUserForStatisticians() {
 		// TODO Auto-generated method stub
 		return userMapper.getAllUserForStatisticians();
+	}
+
+	@Override
+	public List<Summary> getShortSummary(YearMonth ym) {
+		// TODO Auto-generated method stub
+		return summaryMapper.getShortSummary( ym);
 	}
 }

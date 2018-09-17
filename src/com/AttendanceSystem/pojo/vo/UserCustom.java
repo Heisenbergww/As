@@ -4,15 +4,17 @@ import com.AttendanceSystem.pojo.po.User;
 
 public class UserCustom extends User {
 
-	private String department_name;
+	private Integer time;
 
-	public String getDepartment_name() {
-		return department_name;
+	public Integer getTime() {
+		return time;
 	}
 
-	public void setDepartment_name(String department_name) {
-		this.department_name = department_name;
+	public void setTime(Integer time) {
+		this.time = time;
 	}
+
+ 
 	
 	
 }

@@ -44,6 +44,9 @@ public class department {
     
     private Integer  NianTime;
 
+    private Integer OutWork;
+    
+    private Integer YesOrNo;
     
     
 	public Double getShouldAttendTime() {
@@ -213,7 +216,23 @@ public class department {
 	public void setNianTime(Integer nianTime) {
 		NianTime = nianTime;
 	}
+
+	public Integer getOutWork() {
+		return OutWork;
+	}
+
+	public void setOutWork(Integer outWork) {
+		OutWork = outWork;
+	}
+
+	public Integer getYesOrNo() {
+		return YesOrNo;
+	}
+
+	public void setYesOrNo(Integer yesOrNo) {
+		YesOrNo = yesOrNo;
+	}
     
-    
+	
     
 }
